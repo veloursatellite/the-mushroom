@@ -9,12 +9,8 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     if (mySprite.overlapsWith(myEnemy)) {
         music.stopAllSounds()
         music.play(music.melodyPlayable(music.magicWand), music.PlaybackMode.UntilDone)
+        controller.moveSprite(mySprite, 0, 0)
         myEnemy.sayText("попустись", 1000, true)
-        for (let value of sprites.allOfKind(SpriteKind.Player)) {
-            value.setVelocity(0, 0)
-            value.ax = 0
-            value.ay = 0
-        }
         pause(2000)
         scene.cameraShake(4, 500)
         sprites.destroy(mySprite, effects.bubbles, 1000)
@@ -24,7 +20,6 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
         game.setGameOverPlayable(true, music.createSong(assets.song`main theme`), true)
         game.gameOver(true)
         pause(5000)
-        game.splash("наступного дня...")
     }
 })
 sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Player, function (sprite, otherSprite) {
@@ -34,6 +29,9 @@ sprites.onDestroyed(SpriteKind.Player, function (sprite) {
 	
 })
 sprites.onCreated(SpriteKind.Player, function (sprite) {
+	
+})
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
 	
 })
 let otherSprite: Sprite = null
@@ -146,13 +144,11 @@ if (game.ask("прогулятись в лісі?", "A-так B-ні")) {
         value.ax = 0
         value.ay = 0
     }
-    if (game.runtime() > 2000) {
-        myEnemy.sayText(":)")
-        myEnemy.follow(mySprite, 5)
-    }
 } else {
-    scene.setBackgroundColor(2)
+    mySprite.setFlag(SpriteFlag.Invisible, false)
     music.stopAllSounds()
+    scene.setBackgroundColor(2)
+    scene.cameraShake(5, 500)
     pause(500)
     game.setGameOverMessage(false, "ВИГОРІВ")
     game.setGameOverEffect(false, effects.dissolve)
@@ -160,6 +156,11 @@ if (game.ask("прогулятись в лісі?", "A-так B-ні")) {
     game.gameOver(false)
     pause(5000)
 }
+game.onUpdateInterval(60000, function () {
+    music.play(music.createSoundEffect(WaveShape.Triangle, 1037, 657, 79, 0, 3000, SoundExpressionEffect.Warble, InterpolationCurve.Logarithmic), music.PlaybackMode.LoopingInBackground)
+    myEnemy.sayText(":O")
+    myEnemy.follow(mySprite, 10)
+})
 forever(function () {
     if (mySprite.vx != 0 || mySprite.vy != 0) {
         music.play(music.createSoundEffect(
