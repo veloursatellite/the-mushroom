@@ -85,7 +85,7 @@ pause(1000)
 music.play(music.createSong(assets.song`main theme_evil`), music.PlaybackMode.LoopingInBackground)
 game.splash("мітинги, коли, стендапи", "та скільки можна")
 mySprite.setFlag(SpriteFlag.Invisible, false)
-mySprite.sayText(":(", 5000, false)
+mySprite.sayText(":(", 2000, false)
 pause(2000)
 mySprite.setFlag(SpriteFlag.Invisible, true)
 if (game.ask("прогулятись в лісі?", "A-так B-ні")) {
