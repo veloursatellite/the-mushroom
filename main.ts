@@ -26,8 +26,8 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
             `, SpriteKind.Attack)
         animation.runMovementAnimation(
         mySprite,
-        animation.animationPresets(animation.bobbing),
-        100,
+        animation.animationPresets(animation.shake),
+        50,
         false
         )
         Slash.setPosition(mySprite.x, mySprite.y)
@@ -369,8 +369,8 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSp
 let lastVY = 0
 let lastVX = 0
 let Slash: Sprite = null
-let myEnemy: Sprite = null
 let bushes: Sprite = null
+let myEnemy: Sprite = null
 let mySprite: Sprite = null
 let isGameRunning = false
 isGameRunning = false
@@ -518,7 +518,7 @@ mySprite = sprites.create(img`
     . . . . . f f f f f f . . . . . 
     . . . . . f f . . f f . . . . . 
     `, SpriteKind.Player)
-mySprite.z = 1
+mySprite.z = 2
 mySprite.setFlag(SpriteFlag.Invisible, true)
 music.play(music.createSong(assets.song`start`), music.PlaybackMode.LoopingInBackground)
 pause(2000)
@@ -542,6 +542,29 @@ if (game.ask("сходити в ліс по гриби?", "A-так B-ні")) {
     effects.blizzard.startScreenEffect()
     controller.moveSprite(mySprite, 50, 50)
     animate_player()
+    for (let index = 0; index < 5; index++) {
+        myEnemy = sprites.create(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . b b b b . . . . . . 
+            . . . . b b 3 3 3 3 b b . . . . 
+            . . . c b 3 3 3 3 1 1 b c . . . 
+            . . c b 3 3 3 3 3 1 1 1 b c . . 
+            . c b 1 1 1 3 3 3 3 1 1 3 c c . 
+            c b d 1 1 1 3 3 3 3 3 3 3 b b c 
+            c b b d 1 3 3 3 3 3 1 1 1 b b c 
+            c b b b 3 3 1 1 3 3 1 1 d d b c 
+            . c b b b d d 1 1 3 b d d d c . 
+            . . c c b b d d b b b b c c . . 
+            . . . . c c c c c c c c . . . . 
+            . . . . . b b d 1 1 b . . . . . 
+            . . . . . b d d 1 1 b . . . . . 
+            `, SpriteKind.Enemy)
+        tiles.placeOnRandomTile(myEnemy, assets.tile`transparency16`)
+        myEnemy.changeScale(-0.5, ScaleAnchor.Middle)
+        myEnemy.setFlag(SpriteFlag.Invisible, false)
+    }
     for (let index = 0; index < 25; index++) {
         bushes = sprites.create(img`
             . . . . . . 6 6 6 6 . . . . . . 
@@ -563,8 +586,9 @@ if (game.ask("сходити в ліс по гриби?", "A-так B-ні")) {
             `, SpriteKind.Destructible)
         tiles.placeOnRandomTile(bushes, assets.tile`transparency16`)
     }
+    bushes.z = 1
     tiles.placeOnRandomTile(mySprite, sprites.castle.tileGrass1)
-    for (let index = 0; index < 20; index++) {
+    for (let index = 0; index < 15; index++) {
         myEnemy = sprites.create(img`
             . . . . . . . . . . . . . . . . 
             . . . . . . . . . . . . . . . . 
@@ -587,6 +611,7 @@ if (game.ask("сходити в ліс по гриби?", "A-так B-ні")) {
         myEnemy.changeScale(-0.5, ScaleAnchor.Middle)
         myEnemy.setFlag(SpriteFlag.Invisible, false)
     }
+    myEnemy.z = 0
     for (let value of sprites.allOfKind(SpriteKind.Player)) {
         value.setVelocity(0, 0)
         value.ax = 0
